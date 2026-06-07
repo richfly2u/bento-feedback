@@ -265,7 +265,7 @@
     </div>
   </div>
 
-  <form id="feedbackForm">
+  <form id="feedbackForm" novalidate>
 
     <!-- 一、基本資料 -->
     <div class="section">
@@ -560,6 +560,7 @@
     toast.classList.add('show');
     form.reset();
     document.querySelectorAll('.options label').forEach(l => l.classList.remove('selected'));
+    updateFavDishes();
 
     setTimeout(() => toast.classList.remove('show'), 3500);
   });

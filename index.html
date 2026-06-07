@@ -553,68 +553,99 @@
   // 頁面載入時顯示提醒（尚未選擇供餐形式）
   updateFavDishes();
 
-  // 點擊送出按鈕 → 先顯示 modal，再做其他事
-  function handleSubmit() {
-    // ❶ 立刻顯示 modal —— 這是最優先、絕不能被阻擋的動作
+  // 將這裡換成 Google Apps Script 部署後取得的 Web App URL
+  const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzf3PUlqXqsk_0EgptVrzJS-zb6Yn7H9sPuO6nMSThL8y_Z5r18ExYwP72ou8XUgE4/exec';
+
+  function buildFeedbackData(form) {
+    const data = new FormData(form);
+    const obj = {};
+    data.forEach((v, k) => {
+      if (k === 'fav') {
+        obj[k] = obj[k] ? [...obj[k], v] : [v];
+      } else {
+        obj[k] = v;
+      }
+    });
+    obj.fav = obj.fav ? obj.fav.join('、') : '';
+    obj.submitted_at = new Date().toISOString();
+    return obj;
+  }
+
+  function validateFeedback(form) {
+    const requiredNames = ['type', 'gender', 'age'];
+    const mealType = form.querySelector('input[name="type"]:checked');
+
+    if (!mealType) {
+      alert('請先選擇供餐形式');
+      return false;
+    }
+
+    const ratingNames = mealType.value === '桌菜'
+      ? ['taste', 'temp', 'variety', 'overall']
+      : ['taste_b', 'portion', 'ratio', 'overall_b'];
+
+    for (const name of [...requiredNames, ...ratingNames]) {
+      if (!form.querySelector(`input[name="${name}"]:checked`)) {
+        alert('請確認基本資料與評分都已填寫');
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  function showSuccessModal() {
     const modal = document.getElementById('successModal');
     modal.classList.add('show');
     document.body.classList.add('modal-open');
 
-    // ❷ 設定自動關閉
-    const autoCloseMs = 5000;
-    const closeFn = function() {
+    setTimeout(() => {
       modal.classList.remove('show');
       document.body.classList.remove('modal-open');
-    };
-
-    // ❸ 其餘包在 try-catch，絕不影響 modal
-    try {
-      const form = document.getElementById('feedbackForm');
-      const mealType = form.querySelector('input[name="type"]:checked');
-      const isTable = mealType && mealType.value === '桌菜';
-
-      // Build data
-      const data = new FormData(form);
-      const obj = {};
-      data.forEach((v, k) => {
-        if (k === 'fav') {
-          obj[k] = obj[k] ? [...obj[k], v] : [v];
-        } else {
-          obj[k] = v;
-        }
-      });
-      if (obj.fav) obj.fav = obj.fav.join('、');
-      obj.submitted_at = new Date().toISOString();
-
-      // Save to localStorage
-      try {
-        const records = JSON.parse(localStorage.getItem('bento_feedback') || '[]');
-        records.push(obj);
-        localStorage.setItem('bento_feedback', JSON.stringify(records));
-      } catch(lsErr) {
-        console.warn('localStorage save failed:', lsErr);
-      }
-
-      // Reset form
-      setTimeout(() => {
-        form.reset();
-        document.querySelectorAll('.options label').forEach(l => l.classList.remove('selected'));
-        updateFavDishes();
-      }, 100);
-    } catch(err) {
-      console.error('Submit error:', err);
-    }
-
-    // ❹ 自動關閉
-    setTimeout(closeFn, autoCloseMs);
+    }, 5000);
   }
 
-  // Bind to both submit (form Enter) and click (button tap)
-  document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    handleSubmit();
-  });
-  document.querySelector('.submit-btn').addEventListener('click', handleSubmit);
+
+    const form = document.getElementById('feedbackForm');
+    const submitBtn = document.querySelector('.submit-btn');
+
+    if (GOOGLE_SCRIPT_URL.includes('PASTE_YOUR')) {
+      alert('請先把 GOOGLE_SCRIPT_URL 換成 Google Apps Script 的 Web App URL');
+      return;
+    }
+
+    if (!validateFeedback(form)) return;
+
+    const obj = buildFeedbackData(form);
+    submitBtn.disabled = true;
+    submitBtn.textContent = '送出中...';
+
+    try {
+      await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8'
+        },
+        body: JSON.stringify(obj)
+      });
+
+      showSuccessModal();
+      form.reset();
+      document.querySelectorAll('.options label').forEach(l => l.classList.remove('selected'));
+      updateFavDishes();
+    } catch(err) {
+      console.error('Submit error:', err);
+      alert('送出失敗，請稍後再試');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = '🙏 送出回饋';
+    }
+  }
+
+  document.getElementById('feedbackForm').addEventListener('submit', handleSubmit);
 
   // 點擊 modal 背景關閉
   document.getElementById('successModal').addEventListener('click', function(e) {

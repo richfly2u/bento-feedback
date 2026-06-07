@@ -284,36 +284,101 @@
     <div class="section">
       <div class="section-title"><span class="num">2</span> 餐點評分</div>
 
-      <div class="rating-row">
-        <span class="label">菜色口味</span>
-        <div class="stars" data-name="taste">
-          <input type="radio" id="taste5" name="taste" value="5"><label for="taste5">★</label>
-          <input type="radio" id="taste4" name="taste" value="4"><label for="taste4">★</label>
-          <input type="radio" id="taste3" name="taste" value="3"><label for="taste3">★</label>
-          <input type="radio" id="taste2" name="taste" value="2"><label for="taste2">★</label>
-          <input type="radio" id="taste1" name="taste" value="1" required><label for="taste1">★</label>
+      <!-- 桌菜評分 -->
+      <div id="tableRating">
+        <div class="rating-hint" style="color:#c0392b;font-size:13px;margin-bottom:10px;font-weight:500;">🟤 桌菜評分項目</div>
+
+        <div class="rating-row">
+          <span class="label">菜色口味</span>
+          <div class="stars" data-name="taste">
+            <input type="radio" id="taste5" name="taste" value="5"><label for="taste5">★</label>
+            <input type="radio" id="taste4" name="taste" value="4"><label for="taste4">★</label>
+            <input type="radio" id="taste3" name="taste" value="3"><label for="taste3">★</label>
+            <input type="radio" id="taste2" name="taste" value="2"><label for="taste2">★</label>
+            <input type="radio" id="taste1" name="taste" value="1" required><label for="taste1">★</label>
+          </div>
+        </div>
+
+        <div class="rating-row" id="tableTemp">
+          <span class="label">菜色溫度</span>
+          <div class="stars" data-name="temp">
+            <input type="radio" id="temp5" name="temp" value="5"><label for="temp5">★</label>
+            <input type="radio" id="temp4" name="temp" value="4"><label for="temp4">★</label>
+            <input type="radio" id="temp3" name="temp" value="3"><label for="temp3">★</label>
+            <input type="radio" id="temp2" name="temp" value="2"><label for="temp2">★</label>
+            <input type="radio" id="temp1" name="temp" value="1" required><label for="temp1">★</label>
+          </div>
+        </div>
+
+        <div class="rating-row" id="tableVariety">
+          <span class="label">菜色豐富度</span>
+          <div class="stars" data-name="variety">
+            <input type="radio" id="variety5" name="variety" value="5"><label for="variety5">★</label>
+            <input type="radio" id="variety4" name="variety" value="4"><label for="variety4">★</label>
+            <input type="radio" id="variety3" name="variety" value="3"><label for="variety3">★</label>
+            <input type="radio" id="variety2" name="variety" value="2"><label for="variety2">★</label>
+            <input type="radio" id="variety1" name="variety" value="1" required><label for="variety1">★</label>
+          </div>
+        </div>
+
+        <div class="rating-row">
+          <span class="label">整體滿意度</span>
+          <div class="stars" data-name="overall">
+            <input type="radio" id="overall5" name="overall" value="5"><label for="overall5">★</label>
+            <input type="radio" id="overall4" name="overall" value="4"><label for="overall4">★</label>
+            <input type="radio" id="overall3" name="overall" value="3"><label for="overall3">★</label>
+            <input type="radio" id="overall2" name="overall" value="2"><label for="overall2">★</label>
+            <input type="radio" id="overall1" name="overall" value="1" required><label for="overall1">★</label>
+          </div>
         </div>
       </div>
 
-      <div class="rating-row" id="portionRow">
-        <span class="label">份量大小</span>
-        <div class="stars" data-name="portion">
-          <input type="radio" id="portion5" name="portion" value="5"><label for="portion5">★</label>
-          <input type="radio" id="portion4" name="portion" value="4"><label for="portion4">★</label>
-          <input type="radio" id="portion3" name="portion" value="3"><label for="portion3">★</label>
-          <input type="radio" id="portion2" name="portion" value="2"><label for="portion2">★</label>
-          <input type="radio" id="portion1" name="portion" value="1" required><label for="portion1">★</label>
-        </div>
-      </div>
+      <!-- 便當評分 -->
+      <div id="bentoRating" style="display:none;">
+        <div class="rating-hint" style="color:#8B6914;font-size:13px;margin-bottom:10px;font-weight:500;">🟤 便當評分項目</div>
 
-      <div class="rating-row">
-        <span class="label">整體滿意度</span>
-        <div class="stars" data-name="overall">
-          <input type="radio" id="overall5" name="overall" value="5"><label for="overall5">★</label>
-          <input type="radio" id="overall4" name="overall" value="4"><label for="overall4">★</label>
-          <input type="radio" id="overall3" name="overall" value="3"><label for="overall3">★</label>
-          <input type="radio" id="overall2" name="overall" value="2"><label for="overall2">★</label>
-          <input type="radio" id="overall1" name="overall" value="1" required><label for="overall1">★</label>
+        <div class="rating-row">
+          <span class="label">菜色口味</span>
+          <div class="stars" data-name="taste">
+            <input type="radio" id="taste5b" name="taste_b" value="5"><label for="taste5b">★</label>
+            <input type="radio" id="taste4b" name="taste_b" value="4"><label for="taste4b">★</label>
+            <input type="radio" id="taste3b" name="taste_b" value="3"><label for="taste3b">★</label>
+            <input type="radio" id="taste2b" name="taste_b" value="2"><label for="taste2b">★</label>
+            <input type="radio" id="taste1b" name="taste_b" value="1" required><label for="taste1b">★</label>
+          </div>
+        </div>
+
+        <div class="rating-row" id="portionRow">
+          <span class="label">份量大小</span>
+          <div class="stars" data-name="portion">
+            <input type="radio" id="portion5" name="portion" value="5"><label for="portion5">★</label>
+            <input type="radio" id="portion4" name="portion" value="4"><label for="portion4">★</label>
+            <input type="radio" id="portion3" name="portion" value="3"><label for="portion3">★</label>
+            <input type="radio" id="portion2" name="portion" value="2"><label for="portion2">★</label>
+            <input type="radio" id="portion1" name="portion" value="1" required><label for="portion1">★</label>
+          </div>
+        </div>
+
+        <div class="rating-row" id="bentoRatio">
+          <span class="label">主食與配菜比例</span>
+          <div class="stars" data-name="ratio">
+            <input type="radio" id="ratio5" name="ratio" value="5"><label for="ratio5">★</label>
+            <input type="radio" id="ratio4" name="ratio" value="4"><label for="ratio4">★</label>
+            <input type="radio" id="ratio3" name="ratio" value="3"><label for="ratio3">★</label>
+            <input type="radio" id="ratio2" name="ratio" value="2"><label for="ratio2">★</label>
+            <input type="radio" id="ratio1" name="ratio" value="1" required><label for="ratio1">★</label>
+          </div>
+        </div>
+
+        <div class="rating-row">
+          <span class="label">整體滿意度</span>
+          <div class="stars" data-name="overall_b">
+            <input type="radio" id="overall5b" name="overall_b" value="5"><label for="overall5b">★</label>
+            <input type="radio" id="overall4b" name="overall_b" value="4"><label for="overall4b">★</label>
+            <input type="radio" id="overall3b" name="overall_b" value="3"><label for="overall3b">★</label>
+            <input type="radio" id="overall2b" name="overall_b" value="2"><label for="overall2b">★</label>
+            <input type="radio" id="overall1b" name="overall_b" value="1" required><label for="overall1b">★</label>
+          </div>
         </div>
       </div>
     </div>
@@ -361,16 +426,21 @@
     });
   });
 
-  // 桌菜/便當切換：桌菜隱藏份量評分，便當顯示
+  // 桌菜/便當切換：顯示各自評分項目
   document.querySelectorAll('input[name="type"]').forEach(r => {
     r.addEventListener('change', function() {
-      const row = document.getElementById('portionRow');
+      const tableRating = document.getElementById('tableRating');
+      const bentoRating = document.getElementById('bentoRating');
       if (this.value === '桌菜') {
-        row.style.display = 'none';
-        // 清除份量的選取
-        document.querySelectorAll('input[name="portion"]').forEach(p => p.checked = false);
+        tableRating.style.display = 'block';
+        bentoRating.style.display = 'none';
+        // 清除便當選取
+        document.querySelectorAll('#bentoRating input[type="radio"]').forEach(p => p.checked = false);
       } else {
-        row.style.display = 'flex';
+        tableRating.style.display = 'none';
+        bentoRating.style.display = 'block';
+        // 清除桌菜選取（含taste, temp, variety, overall）
+        document.querySelectorAll('#tableRating input[type="radio"]').forEach(p => p.checked = false);
       }
     });
   });
@@ -379,15 +449,18 @@
   document.getElementById('feedbackForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
-    // Validate required (skip portion if 桌菜)
+    // Validate required（桌菜/便當各自檢查）
     const form = this;
+    const mealType = form.querySelector('input[name="type"]:checked');
+    const isTable = mealType && mealType.value === '桌菜';
     const required = form.querySelectorAll('[required]');
     let ok = true;
     required.forEach(r => {
       const name = r.getAttribute('name');
-      // 桌菜時不檢查份量
-      const mealType = form.querySelector('input[name="type"]:checked');
-      if (name === 'portion' && mealType && mealType.value === '桌菜') return;
+      // 桌菜時：不檢查便當的欄位（taste_b, portion, ratio, overall_b）
+      if (isTable && ['taste_b','portion','ratio','overall_b'].includes(name)) return;
+      // 便當時：不檢查桌菜的欄位（taste, temp, variety, overall）
+      if (!isTable && ['taste','temp','variety','overall'].includes(name)) return;
       const checked = form.querySelector(`input[name="${name}"]:checked`);
       if (!checked) ok = false;
     });

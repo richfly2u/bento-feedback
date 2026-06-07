@@ -496,6 +496,7 @@
       lbl.querySelector('input').addEventListener('change', function() {
         lbl.style.background = this.checked ? '#fce8e4' : '#f8f4ec';
         lbl.style.borderColor = this.checked ? '#c0392b' : '#e8dcc8';
+        lbl.style.boxShadow = this.checked ? '0 0 12px rgba(192,57,43,0.35)' : 'none';
       });
       container.appendChild(lbl);
     });

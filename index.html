@@ -209,18 +209,54 @@
   }
   .submit-btn:active { transform: translateY(0); }
 
-  /* Toast */
-  .toast {
+  /* Modal overlay */
+  .modal-overlay {
     display: none;
-    background: #27ae60;
-    color: white;
-    padding: 14px 24px;
-    border-radius: 16px;
-    font-size: 15px;
-    margin-top: 16px;
-    text-align: center;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 999;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s;
   }
-  .toast.show { display: block; animation: fadeIn 0.3s; }
+  .modal-overlay.show { display: flex; }
+  .modal-box {
+    background: #fff;
+    border-radius: 24px;
+    padding: 32px 28px 28px;
+    max-width: 360px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    animation: modalPop 0.35s ease-out;
+  }
+  .modal-box img {
+    width: 120px;
+    height: 120px;
+    border-radius: 60px;
+    object-fit: cover;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  }
+  .modal-box .thanks {
+    font-size: 17px;
+    color: #5a4a3a;
+    line-height: 1.7;
+    font-weight: 500;
+  }
+  .modal-box .thanks em {
+    font-style: normal;
+    color: #c0392b;
+    font-weight: 700;
+  }
+  @keyframes modalPop {
+    0% { transform: scale(0.8); opacity: 0; }
+    60% { transform: scale(1.05); }
+    100% { transform: scale(1); opacity: 1; }
+  }
 
   .anonymity-note {
     text-align: center;
@@ -432,8 +468,15 @@
       ※ 本問卷採不記名方式，僅供內部餐點改進參考
     </div>
 
-    <div id="toast" class="toast">✅ 感謝您的回饋！阿彌陀佛 🙏</div>
   </form>
+
+  <!-- 送出成功彈窗 -->
+  <div id="successModal" class="modal-overlay">
+    <div class="modal-box">
+      <img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=240&h=240&fit=crop&crop=face" alt="可愛拉不拉多">
+      <div class="thanks">感謝您的回饋 🙏<br>您的建言會使<em>炊事組</em>越做越好<br>非常感恩！</div>
+    </div>
+  </div>
 
 </div>
 
@@ -556,14 +599,20 @@
     records.push(obj);
     localStorage.setItem('bento_feedback', JSON.stringify(records));
 
-    // Show toast
-    const toast = document.getElementById('toast');
-    toast.classList.add('show');
+    // Show modal
+    const modal = document.getElementById('successModal');
+    modal.classList.add('show');
     form.reset();
     document.querySelectorAll('.options label').forEach(l => l.classList.remove('selected'));
     updateFavDishes();
 
-    setTimeout(() => toast.classList.remove('show'), 3500);
+    // 5秒後自動關閉
+    setTimeout(() => modal.classList.remove('show'), 5000);
+  });
+
+  // 點擊 modal 背景關閉
+  document.getElementById('successModal').addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('show');
   });
 </script>
 

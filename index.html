@@ -214,11 +214,10 @@
     display: none;
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.55);
+    background: rgba(0,0,0,0.45);
     z-index: 9999;
     justify-content: center;
     align-items: center;
-    animation: fadeIn 0.3s;
   }
   .modal-overlay.show { display: flex; }
   .modal-box {
@@ -554,30 +553,27 @@
   // 頁面載入時顯示提醒（尚未選擇供餐形式）
   updateFavDishes();
 
-  // Form submit
-  document.getElementById('feedbackForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-
+  // 點擊送出按鈕 → 先顯示 modal，再做其他事
+  function handleSubmit() {
+    // ❶ 立刻顯示 modal —— 這是最優先、絕不能被阻擋的動作
     const modal = document.getElementById('successModal');
     modal.classList.add('show');
-    document.body.style.overflow = 'hidden';
+    document.body.classList.add('modal-open');
 
-    // Validate required（桌菜/便當各自檢查）
-    const form = this;
-    const mealType = form.querySelector('input[name="type"]:checked');
-    const isTable = mealType && mealType.value === '桌菜';
-    const required = form.querySelectorAll('[required]');
-    let ok = true;
-    required.forEach(r => {
-      const name = r.getAttribute('name');
-      if (isTable && ['taste_b','portion','ratio','overall_b'].includes(name)) return;
-      if (!isTable && ['taste','temp','variety','overall'].includes(name)) return;
-      const checked = form.querySelector(`input[name="${name}"]:checked`);
-      if (!checked) ok = false;
-    });
+    // ❷ 設定自動關閉
+    const autoCloseMs = 5000;
+    const closeFn = function() {
+      modal.classList.remove('show');
+      document.body.classList.remove('modal-open');
+    };
 
-    // Build & save data
+    // ❸ 其餘包在 try-catch，絕不影響 modal
     try {
+      const form = document.getElementById('feedbackForm');
+      const mealType = form.querySelector('input[name="type"]:checked');
+      const isTable = mealType && mealType.value === '桌菜';
+
+      // Build data
       const data = new FormData(form);
       const obj = {};
       data.forEach((v, k) => {
@@ -589,34 +585,42 @@
       });
       if (obj.fav) obj.fav = obj.fav.join('、');
       obj.submitted_at = new Date().toISOString();
-      const records = JSON.parse(localStorage.getItem('bento_feedback') || '[]');
-      records.push(obj);
-      localStorage.setItem('bento_feedback', JSON.stringify(records));
-    } catch(e) {
-      // localStorage 錯誤不影響 modal 顯示
-      console.warn('Save error:', e);
+
+      // Save to localStorage
+      try {
+        const records = JSON.parse(localStorage.getItem('bento_feedback') || '[]');
+        records.push(obj);
+        localStorage.setItem('bento_feedback', JSON.stringify(records));
+      } catch(lsErr) {
+        console.warn('localStorage save failed:', lsErr);
+      }
+
+      // Reset form
+      setTimeout(() => {
+        form.reset();
+        document.querySelectorAll('.options label').forEach(l => l.classList.remove('selected'));
+        updateFavDishes();
+      }, 100);
+    } catch(err) {
+      console.error('Submit error:', err);
     }
 
-    // 延遲重置表單
-    setTimeout(() => {
-      form.reset();
-      document.querySelectorAll('.options label').forEach(l => l.classList.remove('selected'));
-      updateFavDishes();
-      document.body.style.overflow = '';
-    }, 100);
+    // ❹ 自動關閉
+    setTimeout(closeFn, autoCloseMs);
+  }
 
-    // 5秒後關閉
-    setTimeout(() => {
-      modal.classList.remove('show');
-      document.body.style.overflow = '';
-    }, 5000);
+  // Bind to both submit (form Enter) and click (button tap)
+  document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    handleSubmit();
   });
+  document.querySelector('.submit-btn').addEventListener('click', handleSubmit);
 
   // 點擊 modal 背景關閉
   document.getElementById('successModal').addEventListener('click', function(e) {
     if (e.target === this) {
       this.classList.remove('show');
-      document.body.style.overflow = '';
+      document.body.classList.remove('modal-open');
     }
   });
 </script>

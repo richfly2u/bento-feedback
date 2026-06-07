@@ -295,7 +295,7 @@
         </div>
       </div>
 
-      <div class="rating-row">
+      <div class="rating-row" id="portionRow">
         <span class="label">份量大小</span>
         <div class="stars" data-name="portion">
           <input type="radio" id="portion5" name="portion" value="5"><label for="portion5">★</label>
@@ -361,16 +361,33 @@
     });
   });
 
+  // 桌菜/便當切換：桌菜隱藏份量評分，便當顯示
+  document.querySelectorAll('input[name="type"]').forEach(r => {
+    r.addEventListener('change', function() {
+      const row = document.getElementById('portionRow');
+      if (this.value === '桌菜') {
+        row.style.display = 'none';
+        // 清除份量的選取
+        document.querySelectorAll('input[name="portion"]').forEach(p => p.checked = false);
+      } else {
+        row.style.display = 'flex';
+      }
+    });
+  });
+
   // Form submit
   document.getElementById('feedbackForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
-    // Validate required
+    // Validate required (skip portion if 桌菜)
     const form = this;
     const required = form.querySelectorAll('[required]');
     let ok = true;
     required.forEach(r => {
       const name = r.getAttribute('name');
+      // 桌菜時不檢查份量
+      const mealType = form.querySelector('input[name="type"]:checked');
+      if (name === 'portion' && mealType && mealType.value === '桌菜') return;
       const checked = form.querySelector(`input[name="${name}"]:checked`);
       if (!checked) ok = false;
     });

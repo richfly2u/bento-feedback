@@ -408,32 +408,6 @@
     <div class="section">
       <div class="section-title"><span class="num">3</span> 開放回饋</div>
 
-      <!-- 菜單參考 - 桌菜 -->
-      <details id="menuTable" style="margin-bottom:14px;background:#fdf2ed;border-radius:12px;border:1.5px solid #d48676;display:none;overflow:hidden;">
-        <summary style="font-size:15px;font-weight:700;color:#fff;background:#c0392b;cursor:pointer;padding:12px 16px;text-align:center;letter-spacing:0.08em;user-select:none;">📋 點我看桌菜菜單 ▼</summary>
-        <div style="margin-top:10px;font-size:13px;color:#5a4a3a;line-height:1.8;">
-<p style="font-weight:700;margin:4px 0;"><span style="display:inline-flex;width:24px;height:24px;background:#c0392b;color:#fff;border-radius:50%;font-size:13px;align-items:center;justify-content:center;margin-right:6px;">6</span> 第一天 6/6 午餐桌菜</p>
-<p style="margin:0 0 6px 14px;color:#7a6a5a;">三杯杏包菇、荷蘭豆炒甜薯、豆腦、椰子粉紫米芋頭球、筊白筍、<br>拼盤：①紫菜捲 ②拌大黃瓜 ③椒鹽秀珍菇 ④涼拌芹菜干絲 ⑤養生腰果玉米、越南春捲</p>
-<p style="font-weight:700;margin:8px 0 4px;"><span style="display:inline-flex;width:24px;height:24px;background:#c0392b;color:#fff;border-radius:50%;font-size:13px;align-items:center;justify-content:center;margin-right:6px;">7</span> 第二天 6/7 午餐桌菜</p>
-<p style="margin:0 0 6px 14px;color:#7a6a5a;">髮菜羹、素魚、大白倒扣、滷蘿蔔三角豆腐、絲瓜鴻喜菇、拼盤<br>拼盤：①素蒲燒鰻 ②煙燻茶鵝絲 ③毛豆夾 ④百香蓮藕片 ⑤椒鹽蚵仔酥</p>
-        </div>
-      </details>
-
-      <!-- 菜單參考 - 便當 -->
-      <details id="menuBento" style="margin-bottom:14px;background:#fef6e8;border-radius:12px;border:1.5px solid #d4b87a;display:none;overflow:hidden;">
-        <summary style="font-size:15px;font-weight:700;color:#fff;background:#8B6914;cursor:pointer;padding:12px 16px;text-align:center;letter-spacing:0.08em;user-select:none;">📋 點我便當菜單 ▼</summary>
-        <div style="margin-top:10px;font-size:13px;color:#5a4a3a;line-height:1.8;">
-<p style="font-weight:700;margin:4px 0;">📅 第一天 6/6 午餐便當</p>
-<p style="margin:0 0 6px 14px;color:#7a6a5a;">黑豆毛豆鷹嘴豆+素蝦、紅糟麵腸、滷豆腐、炒青菜、綠辣椒炒杏包菇丁菜脯豆鼓、豆包生菜</p>
-<p style="font-weight:700;margin:8px 0 4px;">📅 第一天 6/6 晚餐便當</p>
-<p style="margin:0 0 6px 14px;color:#7a6a5a;">牛蒡排、紅k豆包、塔香飯量茄子、四季豆、咖哩馬K、小餘干</p>
-<p style="font-weight:700;margin:8px 0 4px;">📅 第二天 6/7 午餐便當</p>
-<p style="margin:0 0 6px 14px;color:#7a6a5a;">滷蘿蔔三角豆腐、素魚、高麗、川耳小瓜涼拌、干燒麵腸、豆子</p>
-<p style="font-weight:700;margin:8px 0 4px;">📅 第二天 6/7 晚餐便當</p>
-<p style="margin:0 0 6px 14px;color:#7a6a5a;">香酥排、南瓜蓮子、檸檬G丁+鳳梨、青菜、炒高麗冬粉</p>
-        </div>
-      </details>
-
       <div class="open-field">
         <label>😋 最喜歡哪道菜？（可複選）</label>
         <div id="favCheckboxes" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
@@ -473,25 +447,19 @@
     });
   });
 
-  // 桌菜/便當切換：顯示各自評分項目＋菜單
+  // 桌菜/便當切換：顯示各自評分項目
   document.querySelectorAll('input[name="type"]').forEach(r => {
     r.addEventListener('change', function() {
       const tableRating = document.getElementById('tableRating');
       const bentoRating = document.getElementById('bentoRating');
-      const menuTable = document.getElementById('menuTable');
-      const menuBento = document.getElementById('menuBento');
       if (this.value === '桌菜') {
         tableRating.style.display = 'block';
         bentoRating.style.display = 'none';
-        menuTable.style.display = 'block';
-        menuBento.style.display = 'none';
         // 清除便當選取
         document.querySelectorAll('#bentoRating input[type="radio"]').forEach(p => p.checked = false);
       } else {
         tableRating.style.display = 'none';
         bentoRating.style.display = 'block';
-        menuTable.style.display = 'none';
-        menuBento.style.display = 'block';
         // 清除桌菜選取
         document.querySelectorAll('#tableRating input[type="radio"]').forEach(p => p.checked = false);
       }

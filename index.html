@@ -514,9 +514,13 @@
   ];
 
   function updateFavDishes(mealType) {
-    const dishes = mealType === '桌菜' ? tableDishes : bentoDishes;
     const container = document.getElementById('favCheckboxes');
     container.innerHTML = '';
+    if (!mealType) {
+      container.innerHTML = '<div style="width:100%;padding:14px 18px;background:#fdf2ed;border:1.5px dashed #d48676;border-radius:12px;text-align:center;font-size:14px;color:#c0392b;">⚠️ 請先選擇上方供餐形式（桌菜或便當）</div>';
+      return;
+    }
+    const dishes = mealType === '桌菜' ? tableDishes : bentoDishes;
     dishes.forEach(d => {
       const lbl = document.createElement('label');
       lbl.style.cssText = 'display:flex;align-items:center;gap:6px;font-size:14px;color:#5a4a3a;cursor:pointer;padding:8px 16px;background:#f8f4ec;border-radius:20px;border:1.5px solid #e8dcc8;transition:all 0.2s;font-weight:400;';
@@ -535,6 +539,9 @@
       if (this.checked) updateFavDishes(this.value);
     });
   });
+
+  // 頁面載入時顯示提醒（尚未選擇供餐形式）
+  updateFavDishes();
 
   // Form submit
   document.getElementById('feedbackForm').addEventListener('submit', function(e) {

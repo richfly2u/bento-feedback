@@ -113,6 +113,12 @@
     border-color: #c0392b;
   }
 
+  /* Checkbox favorite dishes */
+  #favCheckboxes label:hover {
+    background: #efe8dc !important;
+    border-color: #c0392b !important;
+  }
+
   /* Star rating */
   .stars {
     display: flex;
@@ -429,15 +435,8 @@
       </details>
 
       <div class="open-field">
-        <label>😋 最喜歡哪道菜？（請選兩道）</label>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;">
-          <select name="fav1" style="flex:1;min-width:140px;padding:10px 12px;border:1.5px solid #e8dcc8;border-radius:12px;font-size:14px;background:#faf8f4;font-family:inherit;color:#5a4a3a;">
-            <option value="">— 選第一道 —</option>
-          </select>
-          <select name="fav2" style="flex:1;min-width:140px;padding:10px 12px;border:1.5px solid #e8dcc8;border-radius:12px;font-size:14px;background:#faf8f4;font-family:inherit;color:#5a4a3a;">
-            <option value="">— 選第二道 —</option>
-          </select>
-        </div>
+        <label>😋 最喜歡哪道菜？（可複選）</label>
+        <div id="favCheckboxes" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
       </div>
 
       <div class="open-field" style="margin-top:14px;">
@@ -516,13 +515,17 @@
 
   function updateFavDishes(mealType) {
     const dishes = mealType === '桌菜' ? tableDishes : bentoDishes;
-    ['fav1','fav2'].forEach(name => {
-      const sel = document.querySelector(`select[name="${name}"]`);
-      const currentVal = sel.value;
-      sel.innerHTML = '<option value="">— 選' + (name==='fav1'?'第一':'第二') + '道 —</option>';
-      dishes.forEach(d => {
-        sel.innerHTML += `<option value="${d}"${d===currentVal?' selected':''}>${d}</option>`;
+    const container = document.getElementById('favCheckboxes');
+    container.innerHTML = '';
+    dishes.forEach(d => {
+      const lbl = document.createElement('label');
+      lbl.style.cssText = 'display:flex;align-items:center;gap:6px;font-size:14px;color:#5a4a3a;cursor:pointer;padding:8px 16px;background:#f8f4ec;border-radius:20px;border:1.5px solid #e8dcc8;transition:all 0.2s;font-weight:400;';
+      lbl.innerHTML = `<input type="checkbox" name="fav" value="${d}" style="accent-color:#c0392b;"> ${d}`;
+      lbl.querySelector('input').addEventListener('change', function() {
+        lbl.style.background = this.checked ? '#fce8e4' : '#f8f4ec';
+        lbl.style.borderColor = this.checked ? '#c0392b' : '#e8dcc8';
       });
+      container.appendChild(lbl);
     });
   }
 
@@ -531,18 +534,6 @@
     r.addEventListener('change', function() {
       if (this.checked) updateFavDishes(this.value);
     });
-  });
-
-  // 避免選到同一道菜
-  document.addEventListener('change', function(e) {
-    if (e.target.matches('select[name="fav1"]') || e.target.matches('select[name="fav2"]')) {
-      const v1 = document.querySelector('select[name="fav1"]').value;
-      const v2 = document.querySelector('select[name="fav2"]').value;
-      if (v1 && v2 && v1 === v2) {
-        alert('兩道菜請選不同的喔 😊');
-        e.target.value = '';
-      }
-    }
   });
 
   // Form submit
@@ -573,7 +564,15 @@
     // Build data
     const data = new FormData(form);
     const obj = {};
-    data.forEach((v, k) => { obj[k] = v; });
+    data.forEach((v, k) => {
+      if (k === 'fav') {
+        obj[k] = obj[k] ? [...obj[k], v] : [v];
+      } else {
+        obj[k] = v;
+      }
+    });
+    // Convert fav array to comma-separated string
+    if (obj.fav) obj.fav = obj.fav.join('、');
     obj.submitted_at = new Date().toISOString();
 
     // Save to localStorage for demo (or send to server)

@@ -557,6 +557,10 @@
   document.getElementById('feedbackForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
+    const modal = document.getElementById('successModal');
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+
     // Validate required（桌菜/便當各自檢查）
     const form = this;
     const mealType = form.querySelector('input[name="type"]:checked');
@@ -565,44 +569,34 @@
     let ok = true;
     required.forEach(r => {
       const name = r.getAttribute('name');
-      // 桌菜時：不檢查便當的欄位（taste_b, portion, ratio, overall_b）
       if (isTable && ['taste_b','portion','ratio','overall_b'].includes(name)) return;
-      // 便當時：不檢查桌菜的欄位（taste, temp, variety, overall）
       if (!isTable && ['taste','temp','variety','overall'].includes(name)) return;
       const checked = form.querySelector(`input[name="${name}"]:checked`);
       if (!checked) ok = false;
     });
 
-    if (!ok) {
-      alert('請填寫所有必填項目 🙏');
-      return;
+    // Build & save data
+    try {
+      const data = new FormData(form);
+      const obj = {};
+      data.forEach((v, k) => {
+        if (k === 'fav') {
+          obj[k] = obj[k] ? [...obj[k], v] : [v];
+        } else {
+          obj[k] = v;
+        }
+      });
+      if (obj.fav) obj.fav = obj.fav.join('、');
+      obj.submitted_at = new Date().toISOString();
+      const records = JSON.parse(localStorage.getItem('bento_feedback') || '[]');
+      records.push(obj);
+      localStorage.setItem('bento_feedback', JSON.stringify(records));
+    } catch(e) {
+      // localStorage 錯誤不影響 modal 顯示
+      console.warn('Save error:', e);
     }
 
-    // Build data
-    const data = new FormData(form);
-    const obj = {};
-    data.forEach((v, k) => {
-      if (k === 'fav') {
-        obj[k] = obj[k] ? [...obj[k], v] : [v];
-      } else {
-        obj[k] = v;
-      }
-    });
-    // Convert fav array to comma-separated string
-    if (obj.fav) obj.fav = obj.fav.join('、');
-    obj.submitted_at = new Date().toISOString();
-
-    // Save to localStorage for demo (or send to server)
-    const records = JSON.parse(localStorage.getItem('bento_feedback') || '[]');
-    records.push(obj);
-    localStorage.setItem('bento_feedback', JSON.stringify(records));
-
-    // Show modal（先顯示再重置，避免重置後頁面重繪蓋掉彈窗）
-    const modal = document.getElementById('successModal');
-    modal.classList.add('show');
-    document.body.style.overflow = 'hidden';
-
-    // 延遲一點重置表單，確保 modal 已渲染
+    // 延遲重置表單
     setTimeout(() => {
       form.reset();
       document.querySelectorAll('.options label').forEach(l => l.classList.remove('selected'));
@@ -610,7 +604,7 @@
       document.body.style.overflow = '';
     }, 100);
 
-    // 5秒後自動關閉
+    // 5秒後關閉
     setTimeout(() => {
       modal.classList.remove('show');
       document.body.style.overflow = '';

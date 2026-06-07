@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法會餐點意見回饋</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    background: linear-gradient(135deg, #f8f4e8 0%, #f0ebe0 100%);
+    min-height: 100vh;
+    padding: 20px;
+  }
+  .container {
+    max-width: 640px;
+    margin: 0 auto;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(12px);
+    border-radius: 32px;
+    padding: 40px 32px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+    border: 1px solid rgba(255,255,255,0.5);
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .header .icon { font-size: 48px; margin-bottom: 8px; }
+  .header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #5a4a3a;
+    letter-spacing: 0.05em;
+  }
+  .header p {
+    color: #8a7a6a;
+    font-size: 14px;
+    margin-top: 6px;
+  }
+  .header p em { font-style: normal; color: #c0392b; }
+  .section {
+    margin-bottom: 28px;
+  }
+  .section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #5a4a3a;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e8dcc8;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title .num {
+    display: inline-flex;
+    width: 24px; height: 24px;
+    background: #c0392b;
+    color: white;
+    border-radius: 50%;
+    font-size: 12px;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+  }
+  .field-group {
+    margin-bottom: 16px;
+  }
+  .field-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #5a4a3a;
+    margin-bottom: 8px;
+  }
+  .options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .options label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: #5a4a3a;
+    cursor: pointer;
+    padding: 8px 16px;
+    background: #f8f4ec;
+    border-radius: 20px;
+    border: 1.5px solid #e8dcc8;
+    transition: all 0.2s;
+    font-weight: 400;
+    margin-bottom: 0;
+  }
+  .options label:hover {
+    background: #efe8dc;
+    border-color: #c0392b;
+  }
+  .options input[type="radio"]:checked + span {
+    color: #c0392b;
+    font-weight: 600;
+  }
+  .options input[type="radio"]:checked ~ label,
+  .options label:has(input:checked) {
+    background: #fce8e4;
+    border-color: #c0392b;
+  }
+  .options input { display: none; }
+  .options label.selected {
+    background: #fce8e4;
+    border-color: #c0392b;
+  }
+
+  /* Star rating */
+  .stars {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 4px;
+  }
+  .stars input { display: none; }
+  .stars label {
+    font-size: 28px;
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+  .stars label:hover,
+  .stars label:hover ~ label,
+  .stars input:checked ~ label {
+    color: #e67e22;
+  }
+
+  .rating-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0ece4;
+  }
+  .rating-row:last-child { border-bottom: none; }
+  .rating-row .label {
+    font-size: 14px;
+    color: #5a4a3a;
+    flex: 1;
+  }
+
+  /* Textarea */
+  textarea {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1.5px solid #e8dcc8;
+    border-radius: 16px;
+    font-size: 14px;
+    background: #faf8f4;
+    resize: vertical;
+    min-height: 60px;
+    font-family: inherit;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+  }
+  textarea:focus {
+    outline: none;
+    border-color: #c0392b;
+  }
+
+  .open-field {
+    margin-top: 12px;
+  }
+
+  .open-field label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #5a4a3a;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  /* Submit */
+  .submit-wrap {
+    text-align: center;
+    margin-top: 32px;
+  }
+  .submit-btn {
+    background: #c0392b;
+    color: white;
+    border: none;
+    padding: 14px 48px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.25s;
+    letter-spacing: 0.08em;
+    box-shadow: 0 4px 15px rgba(192,57,43,0.3);
+  }
+  .submit-btn:hover {
+    background: #a93226;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(192,57,43,0.4);
+  }
+  .submit-btn:active { transform: translateY(0); }
+
+  /* Toast */
+  .toast {
+    display: none;
+    background: #27ae60;
+    color: white;
+    padding: 14px 24px;
+    border-radius: 16px;
+    font-size: 15px;
+    margin-top: 16px;
+    text-align: center;
+  }
+  .toast.show { display: block; animation: fadeIn 0.3s; }
+
+  .anonymity-note {
+    text-align: center;
+    font-size: 12px;
+    color: #aaa;
+    margin-top: 12px;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 480px) {
+    .container { padding: 24px 18px; }
+    .options label { font-size: 13px; padding: 6px 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <div class="icon">🍚</div>
+    <h1>法會餐點意見回饋</h1>
+    <p>兩天法會餐飲服務｜不記名調查 🙏</p>
+  </div>
+
+  <form id="feedbackForm">
+
+    <!-- 一、基本資料 -->
+    <div class="section">
+      <div class="section-title"><span class="num">1</span> 基本資料</div>
+
+      <div class="field-group">
+        <label>📅 日期</label>
+        <div class="options">
+          <label><input type="radio" name="date" value="第一天" required><span>第一天</span></label>
+          <label><input type="radio" name="date" value="第二天"><span>第二天</span></label>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>🕐 餐期</label>
+        <div class="options">
+          <label><input type="radio" name="meal" value="午餐" required><span>午餐</span></label>
+          <label><input type="radio" name="meal" value="晚餐"><span>晚餐</span></label>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>🍱 供餐形式</label>
+        <div class="options">
+          <label><input type="radio" name="type" value="桌菜" required><span>桌菜</span></label>
+          <label><input type="radio" name="type" value="便當"><span>便當</span></label>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>⚤ 性別</label>
+        <div class="options">
+          <label><input type="radio" name="gender" value="乾" required><span>乾</span></label>
+          <label><input type="radio" name="gender" value="坤"><span>坤</span></label>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>👤 年齡層</label>
+        <div class="options">
+          <label><input type="radio" name="age" value="青年" required><span>青年</span></label>
+          <label><input type="radio" name="age" value="中年"><span>中年</span></label>
+          <label><input type="radio" name="age" value="長者"><span>長者</span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- 二、餐點評分 -->
+    <div class="section">
+      <div class="section-title"><span class="num">2</span> 餐點評分</div>
+
+      <div class="rating-row">
+        <span class="label">菜色口味</span>
+        <div class="stars" data-name="taste">
+          <input type="radio" id="taste5" name="taste" value="5"><label for="taste5">★</label>
+          <input type="radio" id="taste4" name="taste" value="4"><label for="taste4">★</label>
+          <input type="radio" id="taste3" name="taste" value="3"><label for="taste3">★</label>
+          <input type="radio" id="taste2" name="taste" value="2"><label for="taste2">★</label>
+          <input type="radio" id="taste1" name="taste" value="1" required><label for="taste1">★</label>
+        </div>
+      </div>
+
+      <div class="rating-row">
+        <span class="label">份量大小</span>
+        <div class="stars" data-name="portion">
+          <input type="radio" id="portion5" name="portion" value="5"><label for="portion5">★</label>
+          <input type="radio" id="portion4" name="portion" value="4"><label for="portion4">★</label>
+          <input type="radio" id="portion3" name="portion" value="3"><label for="portion3">★</label>
+          <input type="radio" id="portion2" name="portion" value="2"><label for="portion2">★</label>
+          <input type="radio" id="portion1" name="portion" value="1" required><label for="portion1">★</label>
+        </div>
+      </div>
+
+      <div class="rating-row">
+        <span class="label">素食分類標示</span>
+        <div class="stars" data-name="labeling">
+          <input type="radio" id="label5" name="labeling" value="5"><label for="label5">★</label>
+          <input type="radio" id="label4" name="labeling" value="4"><label for="label4">★</label>
+          <input type="radio" id="label3" name="labeling" value="3"><label for="label3">★</label>
+          <input type="radio" id="label2" name="labeling" value="2"><label for="label2">★</label>
+          <input type="radio" id="label1" name="labeling" value="1" required><label for="label1">★</label>
+        </div>
+      </div>
+
+      <div class="rating-row">
+        <span class="label">整體滿意度</span>
+        <div class="stars" data-name="overall">
+          <input type="radio" id="overall5" name="overall" value="5"><label for="overall5">★</label>
+          <input type="radio" id="overall4" name="overall" value="4"><label for="overall4">★</label>
+          <input type="radio" id="overall3" name="overall" value="3"><label for="overall3">★</label>
+          <input type="radio" id="overall2" name="overall" value="2"><label for="overall2">★</label>
+          <input type="radio" id="overall1" name="overall" value="1" required><label for="overall1">★</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- 三、開放回饋 -->
+    <div class="section">
+      <div class="section-title"><span class="num">3</span> 開放回饋</div>
+
+      <div class="open-field">
+        <label>😋 最喜歡哪道菜？</label>
+        <textarea name="fav" rows="2" placeholder="例：紅燒麵筋、五柳枝..."></textarea>
+      </div>
+
+      <div class="open-field" style="margin-top:14px;">
+        <label>🔧 需要改善的地方？</label>
+        <textarea name="improve" rows="2" placeholder="例：菜有點涼、調味太淡..."></textarea>
+      </div>
+
+      <div class="open-field" style="margin-top:14px;">
+        <label>💡 其他建議</label>
+        <textarea name="suggest" rows="2" placeholder="任何想說的..."></textarea>
+      </div>
+    </div>
+
+    <div class="submit-wrap">
+      <button type="submit" class="submit-btn">🙏 送出回饋</button>
+    </div>
+
+    <div class="anonymity-note">
+      ※ 本問卷採不記名方式，僅供內部餐點改進參考
+    </div>
+
+    <div id="toast" class="toast">✅ 感謝您的回饋！阿彌陀佛 🙏</div>
+  </form>
+
+</div>
+
+<script>
+  // Highlight selected option labels
+  document.querySelectorAll('.options input[type="radio"]').forEach(r => {
+    r.addEventListener('change', function() {
+      const group = this.closest('.options');
+      group.querySelectorAll('label').forEach(l => l.classList.remove('selected'));
+      if (this.checked) this.closest('label').classList.add('selected');
+    });
+  });
+
+  // Form submit
+  document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // Validate required
+    const form = this;
+    const required = form.querySelectorAll('[required]');
+    let ok = true;
+    required.forEach(r => {
+      const name = r.getAttribute('name');
+      const checked = form.querySelector(`input[name="${name}"]:checked`);
+      if (!checked) ok = false;
+    });
+
+    if (!ok) {
+      alert('請填寫所有必填項目 🙏');
+      return;
+    }
+
+    // Build data
+    const data = new FormData(form);
+    const obj = {};
+    data.forEach((v, k) => { obj[k] = v; });
+    obj.submitted_at = new Date().toISOString();
+
+    // Save to localStorage for demo (or send to server)
+    const records = JSON.parse(localStorage.getItem('bento_feedback') || '[]');
+    records.push(obj);
+    localStorage.setItem('bento_feedback', JSON.stringify(records));
+
+    // Show toast
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    form.reset();
+    document.querySelectorAll('.options label').forEach(l => l.classList.remove('selected'));
+
+    setTimeout(() => toast.classList.remove('show'), 3500);
+  });
+</script>
+
+</body>
+</html>

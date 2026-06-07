@@ -214,10 +214,8 @@
     display: none;
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.45);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    z-index: 999;
+    background: rgba(0,0,0,0.55);
+    z-index: 9999;
     justify-content: center;
     align-items: center;
     animation: fadeIn 0.3s;
@@ -473,7 +471,7 @@
   <!-- 送出成功彈窗 -->
   <div id="successModal" class="modal-overlay">
     <div class="modal-box">
-      <img src="https://images.dog.ceo/breeds/labrador/n02099712_6275.jpg" alt="可愛小拉不拉多">
+      <img src="https://raw.githubusercontent.com/richfly2u/bento-feedback/main/labrador-puppy.jpg" alt="可愛小拉不拉多">
       <div class="thanks">感謝您的回饋 🙏<br>您的建言會使<em>炊事組</em>越做越好<br>非常感恩！</div>
     </div>
   </div>
@@ -599,20 +597,32 @@
     records.push(obj);
     localStorage.setItem('bento_feedback', JSON.stringify(records));
 
-    // Show modal
+    // Show modal（先顯示再重置，避免重置後頁面重繪蓋掉彈窗）
     const modal = document.getElementById('successModal');
     modal.classList.add('show');
-    form.reset();
-    document.querySelectorAll('.options label').forEach(l => l.classList.remove('selected'));
-    updateFavDishes();
+    document.body.style.overflow = 'hidden';
+
+    // 延遲一點重置表單，確保 modal 已渲染
+    setTimeout(() => {
+      form.reset();
+      document.querySelectorAll('.options label').forEach(l => l.classList.remove('selected'));
+      updateFavDishes();
+      document.body.style.overflow = '';
+    }, 100);
 
     // 5秒後自動關閉
-    setTimeout(() => modal.classList.remove('show'), 5000);
+    setTimeout(() => {
+      modal.classList.remove('show');
+      document.body.style.overflow = '';
+    }, 5000);
   });
 
   // 點擊 modal 背景關閉
   document.getElementById('successModal').addEventListener('click', function(e) {
-    if (e.target === this) this.classList.remove('show');
+    if (e.target === this) {
+      this.classList.remove('show');
+      document.body.style.overflow = '';
+    }
   });
 </script>
 

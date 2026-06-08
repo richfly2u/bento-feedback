@@ -266,16 +266,18 @@
   .modal-box img {
     position: relative;
     z-index: 1;
-    max-width: 180px;
-    max-height: 180px;
-    width: auto;
+    width: min(100%, 292px);
+    aspect-ratio: 2.05 / 1;
     height: auto;
-    padding: 8px;
-    border-radius: 50%;
-    margin-bottom: 16px;
+    object-fit: cover;
+    border-radius: 18px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255,255,255,0.88);
     background:
-      radial-gradient(circle at 50% 48%, rgba(255,244,225,0.88), rgba(255,255,255,0.16) 63%, transparent 70%);
-    filter: drop-shadow(0 12px 18px rgba(95,64,40,0.2));
+      linear-gradient(145deg, rgba(255,255,255,0.72), rgba(255,244,225,0.16));
+    box-shadow:
+      0 14px 24px rgba(95,64,40,0.18),
+      inset 0 1px 0 rgba(255,255,255,0.88);
   }
   .modal-box .thanks {
     position: relative;
@@ -516,7 +518,7 @@
 <!-- 送出成功彈窗 -->
 <div id="successModal" class="modal-overlay">
   <div class="modal-box">
-    <img src="success-puppy.png" alt="感謝貼圖">
+    <img src="success-puppies.jpg" alt="感謝貼圖">
     <div class="thanks">感謝您的回饋 🙏<br>您的建言會使<em>炊事組</em>越做越好<br>非常感恩！</div>
   </div>
 </div>

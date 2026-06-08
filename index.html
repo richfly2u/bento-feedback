@@ -216,7 +216,10 @@
     inset: 0;
     width: 100vw;
     height: 100dvh;
-    background: rgba(0,0,0,0.45);
+    background:
+      radial-gradient(circle at 50% 36%, rgba(255,255,255,0.24), transparent 34%),
+      rgba(46,34,25,0.48);
+    backdrop-filter: blur(8px) saturate(1.12);
     z-index: 9999;
     justify-content: center;
     align-items: center;
@@ -225,39 +228,75 @@
   .modal-overlay.show { display: flex; }
   body.modal-open { overflow: hidden; }
   .modal-box {
-    background: #fff;
+    position: relative;
+    overflow: hidden;
+    background:
+      linear-gradient(145deg, rgba(255,255,255,0.94), rgba(255,250,240,0.82)),
+      rgba(255,255,255,0.78);
     border-radius: 24px;
-    padding: 32px 28px 28px;
+    padding: 34px 30px 30px;
     max-width: 360px;
     width: 90%;
     text-align: center;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-    animation: modalPop 0.35s ease-out;
+    border: 1px solid rgba(255,255,255,0.82);
+    box-shadow:
+      0 26px 70px rgba(72,46,28,0.28),
+      0 10px 24px rgba(192,57,43,0.14),
+      inset 0 1px 0 rgba(255,255,255,0.96),
+      inset 0 -1px 0 rgba(180,130,88,0.12);
+    animation: modalPop 0.42s cubic-bezier(.18,.89,.32,1.18);
+  }
+  .modal-box::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(120deg, rgba(255,255,255,0.72) 0%, rgba(255,255,255,0.18) 22%, transparent 44%),
+      radial-gradient(circle at 50% 0%, rgba(255,235,204,0.56), transparent 44%);
+  }
+  .modal-box::after {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    border-radius: 18px;
+    border: 1px solid rgba(192,57,43,0.14);
+    pointer-events: none;
   }
   .modal-box img {
+    position: relative;
+    z-index: 1;
     max-width: 180px;
     max-height: 180px;
     width: auto;
     height: auto;
-    border-radius: 12px;
+    padding: 8px;
+    border-radius: 50%;
     margin-bottom: 16px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    background:
+      radial-gradient(circle at 50% 48%, rgba(255,244,225,0.88), rgba(255,255,255,0.16) 63%, transparent 70%);
+    filter: drop-shadow(0 12px 18px rgba(95,64,40,0.2));
   }
   .modal-box .thanks {
+    position: relative;
+    z-index: 1;
     font-size: 17px;
     color: #5a4a3a;
     line-height: 1.7;
-    font-weight: 500;
+    font-weight: 600;
+    padding-top: 2px;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.72);
   }
   .modal-box .thanks em {
     font-style: normal;
     color: #c0392b;
     font-weight: 700;
+    background: linear-gradient(transparent 62%, rgba(255,206,156,0.5) 62%);
   }
   @keyframes modalPop {
-    0% { transform: scale(0.8); opacity: 0; }
-    60% { transform: scale(1.05); }
-    100% { transform: scale(1); opacity: 1; }
+    0% { transform: translateY(16px) scale(0.88); opacity: 0; }
+    65% { transform: translateY(-3px) scale(1.02); }
+    100% { transform: translateY(0) scale(1); opacity: 1; }
   }
 
   .anonymity-note {
